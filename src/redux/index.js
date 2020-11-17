@@ -1,8 +1,16 @@
-import redux, {createStore} from "redux"
+import redux, {createStore, applyMiddleware} from "redux"
+import thunk from "redux-thunk"
 
 export function increment() {
-    return {
-        type: "INCREMENT"
+    return (dispatch, getState) => {
+        const currentCount = getState()
+        if(currentCount % 2 === 0) {
+            dispatch({type: "INCREMENT"})
+        } else {
+            setTimeout(() => {
+                dispatch({type: "INCREMENT"})
+            }, 1500)
+        }
     }
 }
 
@@ -23,6 +31,6 @@ function reducer(count = 0, action) {
     }
 }
 
-const store = createStore(reducer)
+const store = createStore(reducer, applyMiddleware(thunk))
 store.subscribe(() => console.log(store.getState()))
 export default store
